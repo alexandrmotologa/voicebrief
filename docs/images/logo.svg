@@ -1,0 +1,218 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <clipPath id="squircle-clip">
+      <rect x="24" y="24" width="976" height="976" rx="220" />
+    </clipPath>
+
+    <linearGradient id="cyan-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f5ff"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+
+    <linearGradient id="amber-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+
+    <linearGradient id="slate-ear-right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="60%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+
+    <linearGradient id="slate-ear-left" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="60%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+
+    <filter id="subtle-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.14" />
+    </filter>
+  </defs>
+
+  <!-- Luxury White Squircle Container (Developer Branding Standard) -->
+  <rect x="24" y="24" width="976" height="976" rx="220" fill="#ffffff" stroke="#e2e8f0" stroke-width="6" />
+
+  <g clip-path="url(#squircle-clip)">
+    <g transform="translate(512, 512)" filter="url(#subtle-shadow)">
+
+      <!-- Hexagonal Architectural Gateway -->
+      <polygon points="
+        0,-400
+        346,-200
+        346,200
+        0,400
+        -346,200
+        -346,-200
+      " fill="none" stroke="#0f172a" stroke-width="40" stroke-linejoin="round" />
+
+      <!-- Concentric Acoustic Telemetry Dashed Hexagon -->
+      <polygon points="
+        0,-364
+        315,-182
+        315,182
+        0,364
+        -315,182
+        -315,-182
+      " fill="none" stroke="#00f5ff" stroke-width="4" opacity="0.45" stroke-dasharray="16, 12" />
+
+      <!-- Acoustic Horizon Axis Indicators -->
+      <line x1="-315" y1="0" x2="-260" y2="0" stroke="#00f5ff" stroke-width="3" opacity="0.6" />
+      <line x1="260" y1="0" x2="315" y2="0" stroke="#00f5ff" stroke-width="3" opacity="0.6" />
+
+      <!-- ============================================================
+           WATERTIGHT BASE MESH SILHOUETTE (ZERO-LEAK FOUNDATION)
+           ============================================================ -->
+      <path d="
+        M 0,-160
+        L 95,-130
+        L 220,-315
+        L 185,-90
+        L 210,15
+        L 145,95
+        L 190,190
+        L 215,275
+        L 90,320
+        L 0,335
+        L -90,320
+        L -215,275
+        L -190,190
+        L -145,95
+        L -210,15
+        L -185,-90
+        L -220,-315
+        L -95,-130
+        Z
+      " fill="#0b0f19" />
+
+      <!-- ============================================================
+           MASCOT: THE ACOUSTIC FENNEC FOX (LOW-POLY ORIGAMI FACETS)
+           ============================================================ -->
+
+      <!-- 1. OVERSIZED ACOUSTIC RADAR EARS -->
+      <!-- Left Ear Outer Shell -->
+      <polygon points="0,-160 -95,-130 -220,-315" fill="#1e293b" />
+      <polygon points="-95,-130 -185,-90 -220,-315" fill="#0f172a" />
+      <!-- Left Ear Inner Acoustic Receiver / Resonator -->
+      <polygon points="-105,-130 -170,-115 -195,-275" fill="#0b0f19" />
+      <polygon points="-105,-130 -195,-275 -125,-215" fill="url(#slate-ear-left)" />
+      <!-- Left Ear Cyan Acoustic Pulse Filament -->
+      <polygon points="-125,-215 -155,-255 -135,-170" fill="url(#cyan-glow)" opacity="0.85" />
+
+      <!-- Right Ear Outer Shell -->
+      <polygon points="0,-160 95,-130 220,-315" fill="#334155" />
+      <polygon points="95,-130 185,-90 220,-315" fill="#1e293b" />
+      <!-- Right Ear Inner Acoustic Receiver / Resonator -->
+      <polygon points="105,-130 170,-115 195,-275" fill="#0f172a" />
+      <polygon points="105,-130 195,-275 125,-215" fill="url(#slate-ear-right)" />
+      <!-- Right Ear Cyan Acoustic Pulse Filament -->
+      <polygon points="125,-215 155,-255 135,-170" fill="url(#cyan-glow)" opacity="0.85" />
+
+      <!-- 2. FOREHEAD AND CROWN SHIELD -->
+      <!-- Crown Central Keel -->
+      <polygon points="0,-160 -55,-105 0,-70" fill="#1e293b" />
+      <polygon points="0,-160 0,-70 55,-105" fill="#334155" />
+      <!-- Upper Forehead Facets -->
+      <polygon points="-55,-105 -95,-130 -140,-85 -85,-55" fill="#0f172a" />
+      <polygon points="55,-105 95,-130 140,-85 85,-55" fill="#475569" />
+      <polygon points="-55,-105 -85,-55 0,-70" fill="#1e293b" />
+      <polygon points="55,-105 0,-70 85,-55" fill="#334155" />
+
+      <!-- 3. BROW AND SOUNDWAVE RADAR CHEEKS -->
+      <!-- Center Brow -->
+      <polygon points="0,-70 -40,-25 0,0" fill="#334155" />
+      <polygon points="0,-70 0,0 40,-25" fill="#475569" />
+
+      <!-- Upper Eyebrow Plates -->
+      <polygon points="-40,-25 -85,-55 -125,-40 -40,-15" fill="#1e293b" />
+      <polygon points="40,-25 85,-55 125,-40 40,-15" fill="#334155" />
+
+      <!-- Wide Zygomatic Cheek Wings (Fennec Acoustic Flairs) -->
+      <polygon points="-140,-85 -185,-90 -210,15 -145,-15" fill="#0f172a" />
+      <polygon points="140,-85 185,-90 210,15 145,-15" fill="#334155" />
+      <polygon points="-145,-15 -210,15 -155,65 -105,35" fill="#1e293b" />
+      <polygon points="145,-15 210,15 155,65 105,35" fill="#475569" />
+
+      <!-- Soundwave Accents on Cheek Flairs (Discrete Low-Poly Polygons) -->
+      <polygon points="-185,10 -155,25 -170,45" fill="#00f5ff" opacity="0.7" />
+      <polygon points="185,10 155,25 170,45" fill="#00f5ff" opacity="0.7" />
+
+      <!-- 4. SHARP ALMOND PREDATOR EYES (CYAN OPTICS) -->
+      <!-- Left Eye Socket Frame -->
+      <polygon points="-40,-15 -125,-40 -105,0" fill="#0b0f19" />
+      <!-- Left Eye Iris (Electric Cyan) -->
+      <polygon points="-48,-15 -112,-30 -85,-5" fill="url(#cyan-glow)" />
+      <!-- Left Eye Focused Slit Pupil -->
+      <polygon points="-78,-26 -85,-12 -72,-16" fill="#0b0f19" />
+      <!-- Left Eye Specular Reflection -->
+      <polygon points="-88,-22 -95,-18 -90,-24" fill="#ffffff" />
+
+      <!-- Right Eye Socket Frame -->
+      <polygon points="40,-15 125,-40 105,0" fill="#0f172a" />
+      <!-- Right Eye Iris (Electric Cyan) -->
+      <polygon points="48,-15 112,-30 85,-5" fill="url(#cyan-glow)" />
+      <!-- Right Eye Focused Slit Pupil -->
+      <polygon points="78,-26 85,-12 72,-16" fill="#0b0f19" />
+      <!-- Right Eye Specular Reflection -->
+      <polygon points="88,-22 95,-18 90,-24" fill="#ffffff" />
+
+      <!-- 5. TAPERED SNOUT AND MUZZLE (ANTI-BUCK-TEETH SLATE MESH) -->
+      <!-- Nose Bridge Central Wedge -->
+      <polygon points="0,0 -24,45 0,65" fill="#1e293b" />
+      <polygon points="0,0 0,65 24,45" fill="#334155" />
+      <!-- Snout Side Facets -->
+      <polygon points="-40,-15 0,0 -24,45 -65,30" fill="#0f172a" />
+      <polygon points="40,-15 0,0 24,45 65,30" fill="#475569" />
+
+      <!-- Geometric Obsidian Nose Tip -->
+      <polygon points="0,65 -22,78 0,92" fill="#0b0f19" />
+      <polygon points="0,65 0,92 22,78" fill="#1e293b" />
+
+      <!-- Lateral Whisker Pads (Refined Mid-Slate, Horizontal Spread) -->
+      <polygon points="-22,78 -65,85 -45,115 0,110" fill="#475569" />
+      <polygon points="22,78 65,85 45,115 0,110" fill="#64748b" />
+      <polygon points="-65,30 -22,78 -65,85 -105,35" fill="#334155" />
+      <polygon points="65,30 22,78 65,85 105,35" fill="#64748b" />
+
+      <!-- Sharp Jaw / Chin Anchor -->
+      <polygon points="0,110 -30,135 0,150" fill="#1e293b" />
+      <polygon points="0,110 0,150 30,135" fill="#334155" />
+      <polygon points="-45,115 -30,135 -105,95" fill="#0f172a" />
+      <polygon points="45,115 30,135 105,95" fill="#475569" />
+
+      <!-- 6. OBSIDIAN CHEST ARMOR AND CORE TELEMETRY -->
+      <!-- Center Throat Keel -->
+      <polygon points="0,150 -55,190 0,230" fill="#1e293b" />
+      <polygon points="0,150 0,230 55,190" fill="#334155" />
+
+      <!-- Lateral Chest Armor Plates -->
+      <polygon points="-30,135 -55,190 -140,165 -105,95" fill="#0f172a" />
+      <polygon points="30,135 55,190 140,165 105,95" fill="#475569" />
+
+      <polygon points="-140,165 -190,190 -155,245 -95,235" fill="#0b0f19" />
+      <polygon points="140,165 190,190 155,245 95,235" fill="#334155" />
+
+      <!-- Pectoral Core Plates -->
+      <polygon points="-55,190 0,230 -65,280 -115,245" fill="#1e293b" />
+      <polygon points="55,190 0,230 65,280 115,245" fill="#334155" />
+
+      <!-- Lower Keel Sternum -->
+      <polygon points="0,230 -65,280 0,335" fill="#0f172a" />
+      <polygon points="0,230 0,335 65,280" fill="#1e293b" />
+
+      <!-- Flank Base Plates -->
+      <polygon points="-65,280 -155,245 -215,275 -90,320" fill="#0b0f19" />
+      <polygon points="65,280 155,245 215,275 90,320" fill="#1e293b" />
+      <polygon points="-65,280 -90,320 0,335" fill="#1e293b" />
+      <polygon points="65,280 90,320 0,335" fill="#334155" />
+
+      <!-- Central Acoustic Node / Telemetry Core (Amber Warmth) -->
+      <polygon points="0,215 -18,235 0,255" fill="url(#amber-accent)" />
+      <polygon points="0,215 0,255 18,235" fill="url(#amber-accent)" />
+      <!-- Cyan Core Dot -->
+      <circle cx="0" cy="235" r="4" fill="#00f5ff" />
+
+    </g>
+  </g>
+</svg>

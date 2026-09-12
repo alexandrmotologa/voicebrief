@@ -1,21 +1,58 @@
-# VoiceBrief
+<p align="center">
+  <img src="docs/images/logo.png?raw=true" alt="VoiceBrief Logo" width="140" style="border-radius: 28px;" />
+</p>
+
+<h1 align="center">VoiceBrief</h1>
+
+<p align="center">
+  <strong>Voice note intelligence & interactive audio playback for Telegram</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/alexandrmotologa/voicebrief/actions"><img src="https://img.shields.io/badge/CI-passing-10b981?style=flat-square&logo=githubactions&logoColor=white" alt="CI Status" /></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-v22+-339933?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node Version" /></a>
+  <a href="https://fastify.dev/"><img src="https://img.shields.io/badge/Fastify-5.x-000000?style=flat-square&logo=fastify&logoColor=white" alt="Fastify" /></a>
+  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18.3-61dafb?style=flat-square&logo=react&logoColor=black" alt="React" /></a>
+  <a href="https://ffmpeg.org/"><img src="https://img.shields.io/badge/FFmpeg-Opus_%E2%86%92_MP3-007808?style=flat-square&logo=ffmpeg&logoColor=white" alt="FFmpeg" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="License" /></a>
+</p>
+
+---
 
 VoiceBrief is an audio transcription service and Telegram Mini App that turns voice notes into concise summaries, actionable checklists, and interactive transcripts with synchronized audio playback.
 
 Users can forward any voice message to the Telegram bot to receive an immediate text overview, then launch the Mini App to scrub through the audio with sentence-by-sentence highlights and toggle completion on action items.
 
-```
-+-------------------------------------------------------------------------+
-|                              VoiceBrief                                 |
-|                                                                         |
-|  [||||||||||||||||||||||||||||||||||||||||||||||||||||||||||] 01:24/02:45 |
-|  [> Play]  [1x] [1.25x] [1.5x] [2x]                                     |
-|                                                                         |
-|  Summary                Action Items (3)           Full Transcript      |
-|  * Release Tuesday      [x] Deploy migrations      00:00 Alex: Review   |
-|  * Stripe tested        [ ] Update documentation   00:15 Elena: Fixed   |
-+-------------------------------------------------------------------------+
-```
+---
+
+## Interface Preview
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="50%">
+        <strong>Executive Summary & Waveform Diarization</strong><br/><br/>
+        <img src="docs/images/screenshot_summary.png?raw=true" alt="Executive Summary & Diarization" width="340" style="border-radius: 14px;" />
+      </td>
+      <td align="center" width="50%">
+        <strong>Interactive Action Items & Calendar Export</strong><br/><br/>
+        <img src="docs/images/screenshot_tasks.png?raw=true" alt="Action Items Checklist" width="340" style="border-radius: 14px;" />
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="50%">
+        <strong>Synchronized Transcript & Audio Clipping</strong><br/><br/>
+        <img src="docs/images/screenshot_transcript.png?raw=true" alt="Synchronized Transcript & Audio Clipping" width="340" style="border-radius: 14px;" />
+      </td>
+      <td align="center" width="50%">
+        <strong>"Ask AI" Contextual Q&A with Citations</strong><br/><br/>
+        <img src="docs/images/screenshot_chat.png?raw=true" alt="Ask AI Contextual Q&A" width="340" style="border-radius: 14px;" />
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
 
 ## Features
 
