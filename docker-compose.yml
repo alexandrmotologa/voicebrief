@@ -1,0 +1,27 @@
+services:
+  voicebrief:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: voicebrief
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - HOST=0.0.0.0
+      - DEMO_MODE=${DEMO_MODE:-true}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-mock_token}
+      - TELEGRAM_MINI_APP_URL=${TELEGRAM_MINI_APP_URL:-http://localhost:8080}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - AI_TRANSCRIBER=${AI_TRANSCRIBER:-groq}
+      - AI_SUMMARIZER=${AI_SUMMARIZER:-openai}
+      - DATABASE_PATH=/data/voicebrief.db
+      - AUDIO_STORAGE_PATH=/data/audio
+    volumes:
+      - voicebrief_data:/data
+
+volumes:
+  voicebrief_data:
+    driver: local

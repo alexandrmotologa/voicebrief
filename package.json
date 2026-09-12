@@ -1,0 +1,30 @@
+{
+  "name": "voicebrief-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Telegram Mini App and Bot for audio transcription, action items, and synchronized playback",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev:server": "npm --workspace=server run dev",
+    "dev:web": "npm --workspace=web run dev",
+    "dev": "npm --workspace=server run dev",
+    "build:server": "npm --workspace=server run build",
+    "build:web": "npm --workspace=web run build",
+    "build": "npm run build:web && npm run build:server",
+    "test": "npm --workspace=server test",
+    "start": "npm --workspace=server run start"
+  },
+  "keywords": [
+    "telegram-bot",
+    "telegram-mini-app",
+    "transcription",
+    "whisper",
+    "voice-notes",
+    "action-items"
+  ],
+  "author": "Alexander Motologa",
+  "license": "MIT"
+}
