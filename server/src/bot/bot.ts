@@ -93,6 +93,18 @@ export function initTelegramBot(): Bot | null {
     await ctx.reply(message, { reply_markup: keyboard });
   });
 
+  bot.command('tldr', async (ctx) => {
+    const replyMsg = ctx.message?.reply_to_message;
+    if (replyMsg && (replyMsg.voice || replyMsg.audio || replyMsg.document)) {
+      await handleIncomingVoiceOrAudio({
+        ...ctx,
+        message: replyMsg,
+      } as any);
+    } else {
+      await ctx.reply('Please reply to a voice note with /tldr to transcribe and summarize it.');
+    }
+  });
+
   bot.on('message:voice', handleIncomingVoiceOrAudio);
   bot.on('message:audio', handleIncomingVoiceOrAudio);
   bot.on('message:document', handleIncomingVoiceOrAudio);

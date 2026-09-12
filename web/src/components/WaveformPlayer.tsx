@@ -3,12 +3,19 @@ import { useRef } from 'react';
 import { Play, Pause, RotateCcw, RotateCw } from 'lucide-react';
 import { useTelegram } from '../hooks/useTelegram';
 
+export interface WaveformSegment {
+  start: number;
+  end: number;
+  speaker: string;
+}
+
 interface WaveformPlayerProps {
   isPlaying: boolean;
   currentTime: number;
   duration: number;
   peaks: number[];
   playbackRate: 1 | 1.25 | 1.5 | 2;
+  segments?: WaveformSegment[];
   onTogglePlay: () => void;
   onSeek: (seconds: number) => void;
   onRateChange: (rate: 1 | 1.25 | 1.5 | 2) => void;
@@ -20,6 +27,7 @@ export const WaveformPlayer: FC<WaveformPlayerProps> = ({
   duration,
   peaks,
   playbackRate,
+  segments = [],
   onTogglePlay,
   onSeek,
   onRateChange,
@@ -50,8 +58,47 @@ export const WaveformPlayer: FC<WaveformPlayerProps> = ({
   const progressRatio = duration > 0 ? Math.min(1, currentTime / duration) : 0;
   const displayPeaks = peaks && peaks.length > 0 ? peaks : Array(64).fill(0.35);
 
+  const getBarColor = (barTime: number, isPlayed: boolean) => {
+    const seg = segments.find((s) => barTime >= s.start && barTime <= s.end);
+    const speakerName = (seg?.speaker || '').toLowerCase();
+
+    if (speakerName.includes('alex')) {
+      return isPlayed
+        ? 'bg-indigo-400 shadow-sm shadow-indigo-500/50'
+        : 'bg-indigo-950/80 border border-indigo-800/40';
+    }
+    if (speakerName.includes('elena')) {
+      return isPlayed
+        ? 'bg-cyan-400 shadow-sm shadow-cyan-500/50'
+        : 'bg-cyan-950/80 border border-cyan-800/40';
+    }
+    if (speakerName.includes('david')) {
+      return isPlayed
+        ? 'bg-emerald-400 shadow-sm shadow-emerald-500/50'
+        : 'bg-emerald-950/80 border border-emerald-800/40';
+    }
+
+    return isPlayed ? 'bg-indigo-400' : 'bg-slate-700/80';
+  };
+
   return (
-    <div className="w-full glass-dock p-4 rounded-2xl shadow-2xl flex flex-col gap-3">
+    <div className="w-full glass-dock p-4 rounded-2xl shadow-2xl flex flex-col gap-2.5">
+      {/* Speaker Heatmap Legend */}
+      <div className="flex items-center justify-between px-1 text-[10px] text-slate-400">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-indigo-400" /> Alex
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-cyan-400" /> Elena
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-400" /> David
+          </span>
+        </div>
+        <span className="text-slate-500">Speaker Heatmap</span>
+      </div>
+
       {/* Waveform visual scrubber */}
       <div
         ref={waveformRef}
@@ -62,7 +109,9 @@ export const WaveformPlayer: FC<WaveformPlayerProps> = ({
         {displayPeaks.map((peak, idx) => {
           const barRatio = idx / displayPeaks.length;
           const isPlayed = barRatio <= progressRatio;
+          const barTime = barRatio * duration;
           const heightPercent = Math.max(12, Math.min(100, Math.round(peak * 100)));
+          const barColor = getBarColor(barTime, isPlayed);
 
           return (
             <div
@@ -71,11 +120,7 @@ export const WaveformPlayer: FC<WaveformPlayerProps> = ({
             >
               <div
                 style={{ height: `${heightPercent}%` }}
-                className={`w-full max-w-[4px] rounded-full transition-colors duration-150 ${
-                  isPlayed
-                    ? 'bg-indigo-400 group-hover:bg-indigo-300 shadow-sm shadow-indigo-500/50'
-                    : 'bg-slate-700/80 group-hover:bg-slate-600'
-                }`}
+                className={`w-full max-w-[4px] rounded-full transition-colors duration-150 ${barColor}`}
               />
             </div>
           );
@@ -84,12 +129,12 @@ export const WaveformPlayer: FC<WaveformPlayerProps> = ({
         {/* Floating progress scrubber head */}
         <div
           style={{ left: `${progressRatio * 100}%` }}
-          className="absolute top-0 bottom-0 w-[2px] bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)] pointer-events-none transition-all duration-75"
+          className="absolute top-0 bottom-0 w-[2px] bg-white shadow-[0_0_10px_rgba(255,255,255,0.9)] pointer-events-none transition-all duration-75"
         />
       </div>
 
       {/* Control bar */}
-      <div className="flex items-center justify-between pt-1">
+      <div className="flex items-center justify-between pt-0.5">
         {/* Play/Pause & Skips */}
         <div className="flex items-center gap-2">
           <button
@@ -108,7 +153,11 @@ export const WaveformPlayer: FC<WaveformPlayerProps> = ({
             className="w-12 h-12 rounded-full bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 hover:from-indigo-500 hover:to-indigo-400 active:scale-95 transition-all"
             title={isPlaying ? 'Pause' : 'Play'}
           >
-            {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+            {isPlaying ? (
+              <Pause className="w-5 h-5 fill-current" />
+            ) : (
+              <Play className="w-5 h-5 fill-current ml-0.5" />
+            )}
           </button>
 
           <button

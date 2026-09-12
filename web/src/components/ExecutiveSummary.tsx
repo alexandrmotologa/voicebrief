@@ -1,5 +1,6 @@
 import type { FC } from 'react';
-import { Clock, CheckCircle2, FileText, Lightbulb, ListTodo } from 'lucide-react';
+import { Clock, CheckCircle2, FileText, Lightbulb, ListTodo, Activity, Languages } from 'lucide-react';
+import { useTelegram } from '../hooks/useTelegram';
 
 interface ExecutiveSummaryProps {
   title: string;
@@ -9,6 +10,10 @@ interface ExecutiveSummaryProps {
   actionItemsTotal: number;
   actionItemsCompleted: number;
   segmentsCount: number;
+  tone?: string;
+  sentiment?: string;
+  currentLanguage?: 'en' | 'ro' | 'es';
+  onLanguageChange?: (lang: 'en' | 'ro' | 'es') => void;
 }
 
 export const ExecutiveSummary: FC<ExecutiveSummaryProps> = ({
@@ -19,7 +24,12 @@ export const ExecutiveSummary: FC<ExecutiveSummaryProps> = ({
   actionItemsTotal,
   actionItemsCompleted,
   segmentsCount,
+  tone = 'Action-oriented',
+  sentiment = 'High Priority',
+  currentLanguage = 'en',
+  onLanguageChange,
 }) => {
+  const { hapticImpact } = useTelegram();
   const minutes = Math.floor(durationSec / 60);
   const seconds = durationSec % 60;
   const formattedDuration = `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
@@ -30,7 +40,46 @@ export const ExecutiveSummary: FC<ExecutiveSummaryProps> = ({
     <div className="flex flex-col gap-5">
       {/* Top Header Card */}
       <div className="glass-panel p-5 rounded-2xl">
-        <h2 className="text-xl font-bold font-display text-white tracking-tight mb-3">{title}</h2>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h2 className="text-xl font-bold font-display text-white tracking-tight flex-1">
+            {title}
+          </h2>
+
+          {/* Language Switcher */}
+          {onLanguageChange && (
+            <div className="flex items-center gap-1 bg-slate-900/90 border border-slate-800 p-1 rounded-xl text-xs">
+              <Languages className="w-3 h-3 text-slate-400 ml-1" />
+              {(['en', 'ro', 'es'] as const).map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => {
+                    hapticImpact('light');
+                    onLanguageChange(lang);
+                  }}
+                  className={`px-2 py-0.5 rounded-lg uppercase font-bold text-[10px] transition-all ${
+                    currentLanguage === lang
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {lang}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Tone & Sentiment Badges */}
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <span className="text-[11px] font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
+            <Activity className="w-3 h-3 text-indigo-400" />
+            <span>Tone: {tone}</span>
+          </span>
+
+          <span className="text-[11px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/25 px-2.5 py-0.5 rounded-md">
+            Sentiment: {sentiment}
+          </span>
+        </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-3">

@@ -156,3 +156,88 @@ Allows manual testing via web drag-and-drop or curl without Telegram.
 - **Body field:** `file` (binary audio file)
 - **Response: `200 OK`**
   Returns the complete analyzed note structure.
+
+---
+
+### 8. Ask AI context Q&A
+Ask any question regarding the voice note content. The engine queries the transcript and returns a factual answer with exact timestamp citations.
+
+- **URL:** `POST /api/notes/:id/ask`
+- **Body:**
+  ```json
+  {
+    "question": "What is the status of the Stripe checkout integration?"
+  }
+  ```
+- **Response: `200 OK`**
+  ```json
+  {
+    "answer": "David confirmed that all idempotent Stripe webhook handlers are finished and automated regression tests passed. Elena is scheduled to run end-to-end checkout validation on iOS staging on Tuesday morning.",
+    "citedSegments": [
+      {
+        "time": 29.0,
+        "speaker": "David (Backend)",
+        "text": "Yes, I finished writing the idempotent webhook handlers yesterday. All automated regression suites passed."
+      }
+    ]
+  }
+  ```
+
+---
+
+### 9. Slice audio snippet
+Slices an exact segment from the audio file for sharing or focused review.
+
+- **URL:** `POST /api/notes/:id/clip`
+- **Body:**
+  ```json
+  {
+    "start": 12.8,
+    "duration": 15.7
+  }
+  ```
+- **Response: `200 OK`**
+  ```json
+  {
+    "clipUrl": "/api/audio/clips/clip_note_01h9a8b7c6_13_16.mp3",
+    "filename": "clip_note_01h9a8b7c6_13_16.mp3",
+    "start": 12.8,
+    "duration": 15.7
+  }
+  ```
+
+---
+
+### 10. Stream audio snippet
+Streams a generated audio clip with byte-range support.
+
+- **URL:** `GET /api/audio/clips/:filename`
+- **Response: `200 OK` or `206 Partial Content`**
+  - Content-Type: `audio/mpeg`
+
+---
+
+### 11. Translate note summary
+Translates the title, TL;DR bullets, and key decisions to a target language (`ro`, `es`, `en`).
+
+- **URL:** `POST /api/notes/:id/translate`
+- **Body:**
+  ```json
+  {
+    "targetLanguage": "ro"
+  }
+  ```
+- **Response: `200 OK`**
+  ```json
+  {
+    "title": "Sincronizare lansare produs & sarcini",
+    "tldr": [
+      "Lansarea versiunii mobile 1.4 a fost amânată pentru marțea viitoare.",
+      "Integrarea webhook-urilor Stripe a fost finalizată și testată cu succes."
+    ],
+    "keyDecisions": [
+      "Data de lansare v1.4 confirmată pentru marțea viitoare.",
+      "Migrarea bazei de date setată pentru duminică la 02:00 UTC."
+    ]
+  }
+  ```

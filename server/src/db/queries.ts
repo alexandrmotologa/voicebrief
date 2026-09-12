@@ -64,6 +64,8 @@ export interface NoteDetailsDTO {
   actionItems: ActionItemDTO[];
   segments: SegmentDTO[];
   rawText: string;
+  tone?: string;
+  sentiment?: string;
   createdAt: string;
 }
 
@@ -209,6 +211,8 @@ export function getNoteById(id: string): NoteDetailsDTO | null {
     actionItems,
     segments,
     rawText: note.raw_text || '',
+    tone: 'Action-oriented',
+    sentiment: 'High Priority',
     createdAt: note.created_at,
   };
 }

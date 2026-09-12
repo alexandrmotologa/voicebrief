@@ -12,9 +12,11 @@ import {
   NoteDetailsDTO,
 } from '../db/queries.js';
 import { getMockSyncAnalysis } from '../ai/mockAi.js';
-import { generateWaveformPeaks, convertToMp3, getAudioDuration } from '../audio/converter.js';
+import { generateWaveformPeaks, convertToMp3, getAudioDuration, sliceAudioSnippet } from '../audio/converter.js';
 import { transcribeAudio } from '../ai/transcriber.js';
 import { summarizeTranscript } from '../ai/summarizer.js';
+import { answerQuestionAboutNote } from '../ai/qa.js';
+import { translateNoteContent } from '../ai/translator.js';
 
 export async function registerNoteRoutes(fastify: FastifyInstance): Promise<void> {
   // GET /api/notes - List notes
@@ -53,6 +55,8 @@ export async function registerNoteRoutes(fastify: FastifyInstance): Promise<void
       waveformPeaks: generateWaveformPeaks(64, 'demo'),
       tldr: mock.tldr,
       keyDecisions: mock.keyDecisions,
+      tone: mock.tone || 'Action-oriented',
+      sentiment: mock.sentiment || 'High Priority',
       actionItems: mock.actionItems.map((a, i) => ({
         id: `demo_act_${i + 1}`,
         task: a.task,
@@ -90,6 +94,8 @@ export async function registerNoteRoutes(fastify: FastifyInstance): Promise<void
         waveformPeaks: generateWaveformPeaks(64, 'demo'),
         tldr: mock.tldr,
         keyDecisions: mock.keyDecisions,
+        tone: mock.tone || 'Action-oriented',
+        sentiment: mock.sentiment || 'High Priority',
         actionItems: mock.actionItems.map((a, i) => ({
           id: `demo_act_${i + 1}`,
           task: a.task,
@@ -118,13 +124,141 @@ export async function registerNoteRoutes(fastify: FastifyInstance): Promise<void
     return reply.send(note);
   });
 
+  // POST /api/notes/:id/ask - Chat with Voice Note (Q&A)
+  fastify.post('/api/notes/:id/ask', async (request: FastifyRequest, reply: FastifyReply) => {
+    const params = request.params as { id: string };
+    const body = request.body as { question: string };
+
+    if (!body || !body.question || !body.question.trim()) {
+      return reply.status(400).send({ error: 'question is required' });
+    }
+
+    let rawText = '';
+    let segments: Array<{ start: number; end: number; speaker: string; text: string }> = [];
+
+    if (params.id === 'demo') {
+      const mock = getMockSyncAnalysis();
+      rawText = mock.rawText;
+      segments = mock.segments;
+    } else {
+      const note = getNoteById(params.id);
+      if (!note) {
+        return reply.status(404).send({ error: 'Note not found' });
+      }
+      rawText = note.rawText;
+      segments = note.segments;
+    }
+
+    const qaResult = await answerQuestionAboutNote(body.question.trim(), rawText, segments);
+    return reply.send(qaResult);
+  });
+
+  // POST /api/notes/:id/clip - Slice and share audio segment
+  fastify.post('/api/notes/:id/clip', async (request: FastifyRequest, reply: FastifyReply) => {
+    const params = request.params as { id: string };
+    const body = request.body as { start: number; end: number; label?: string };
+
+    if (!body || typeof body.start !== 'number' || typeof body.end !== 'number' || body.end <= body.start) {
+      return reply.status(400).send({ error: 'Valid start and end seconds are required' });
+    }
+
+    const storageDir = process.env.AUDIO_STORAGE_PATH || path.join(process.cwd(), 'data', 'audio');
+    const clipsDir = path.join(storageDir, 'clips');
+    if (!fs.existsSync(clipsDir)) {
+      fs.mkdirSync(clipsDir, { recursive: true });
+    }
+
+    let sourceAudioPath = '';
+    if (params.id === 'demo') {
+      sourceAudioPath = path.join(process.cwd(), 'server', 'assets', 'demo.mp3');
+      if (!fs.existsSync(sourceAudioPath)) {
+        sourceAudioPath = path.join(process.cwd(), 'assets', 'demo.mp3');
+      }
+    } else {
+      sourceAudioPath = path.join(storageDir, `${params.id}.mp3`);
+      if (!fs.existsSync(sourceAudioPath)) {
+        sourceAudioPath = path.join(process.cwd(), 'server', 'assets', 'demo.mp3');
+      }
+    }
+
+    const clipId = `clip_${params.id}_${Math.round(body.start)}_${Math.round(body.end)}_${crypto.randomBytes(4).toString('hex')}`;
+    const clipFilename = `${clipId}.mp3`;
+    const outputPath = path.join(clipsDir, clipFilename);
+
+    try {
+      await sliceAudioSnippet(sourceAudioPath, body.start, body.end, outputPath);
+      const durationSec = Math.round(body.end - body.start);
+
+      return reply.send({
+        clipId,
+        clipUrl: `/api/audio/clips/${clipFilename}`,
+        durationSec,
+        startSec: body.start,
+        endSec: body.end,
+      });
+    } catch (err) {
+      return reply.status(500).send({
+        error: `Failed to create audio clip: ${err instanceof Error ? err.message : 'Unknown error'}`,
+      });
+    }
+  });
+
+  // POST /api/notes/:id/translate - Translate note summary and segments
+  fastify.post('/api/notes/:id/translate', async (request: FastifyRequest, reply: FastifyReply) => {
+    const params = request.params as { id: string };
+    const body = request.body as { targetLanguage: 'en' | 'ro' | 'es' | 'de' };
+
+    const targetLang = body?.targetLanguage || 'en';
+
+    let baseNote: NoteDetailsDTO | null = null;
+    if (params.id === 'demo') {
+      const mock = getMockSyncAnalysis();
+      baseNote = {
+        id: 'demo',
+        title: mock.title,
+        durationSec: mock.durationSec,
+        audioUrl: '/api/audio/demo',
+        waveformPeaks: generateWaveformPeaks(64, 'demo'),
+        tldr: mock.tldr,
+        keyDecisions: mock.keyDecisions,
+        actionItems: mock.actionItems.map((a, i) => ({
+          id: `demo_act_${i + 1}`,
+          task: a.task,
+          assignee: a.assignee,
+          deadline: a.deadline,
+          priority: a.priority,
+          completed: a.completed,
+        })),
+        segments: mock.segments.map((s, i) => ({
+          id: `demo_seg_${i + 1}`,
+          start: s.start,
+          end: s.end,
+          speaker: s.speaker,
+          text: s.text,
+        })),
+        rawText: mock.rawText,
+        tone: mock.tone,
+        sentiment: mock.sentiment,
+        createdAt: new Date().toISOString(),
+      };
+    } else {
+      baseNote = getNoteById(params.id);
+    }
+
+    if (!baseNote) {
+      return reply.status(404).send({ error: 'Note not found' });
+    }
+
+    const translated = await translateNoteContent(baseNote, targetLang);
+    return reply.send(translated);
+  });
+
   // PATCH /api/actions/:id/toggle - Toggle action item
   fastify.patch('/api/actions/:id/toggle', async (request: FastifyRequest, reply: FastifyReply) => {
     const params = request.params as { id: string };
     const id = params.id;
 
     if (id.startsWith('demo_act_')) {
-      // In-memory demo toggle response
       return reply.send({
         id,
         completed: true,

@@ -20,6 +20,8 @@ export interface MockAnalysisResult {
   }[];
   segments: MockSegment[];
   rawText: string;
+  tone?: string;
+  sentiment?: string;
 }
 
 export function getMockSyncAnalysis(): MockAnalysisResult {
@@ -129,5 +131,7 @@ export function getMockSyncAnalysis(): MockAnalysisResult {
     ],
     segments,
     rawText,
+    tone: 'Action-oriented',
+    sentiment: 'High Priority',
   };
 }

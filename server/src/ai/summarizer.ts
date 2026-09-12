@@ -13,6 +13,8 @@ export interface SummaryExtractionResult {
   tldr: string[];
   keyDecisions: string[];
   actionItems: ExtractedActionItem[];
+  tone?: string;
+  sentiment?: string;
 }
 
 export async function summarizeTranscript(
@@ -28,6 +30,8 @@ export async function summarizeTranscript(
       tldr: mock.tldr,
       keyDecisions: mock.keyDecisions,
       actionItems: mock.actionItems,
+      tone: mock.tone || 'Action-oriented',
+      sentiment: mock.sentiment || 'High Priority',
     };
   }
 
@@ -87,6 +91,8 @@ Analyze the following transcript of a voice message or meeting sync.
 Output valid JSON adhering strictly to this schema:
 {
   "title": "Concise 3-6 word descriptive title of the audio note",
+  "tone": "Brief tone descriptor e.g. Action-oriented, Urgent, Strategic, Brainstorming",
+  "sentiment": "Overall sentiment e.g. High Priority, Constructive, Informative",
   "tldr": ["3-4 clear, concrete executive bullet points summarizing main facts"],
   "keyDecisions": ["Concrete decisions agreed upon by participants"],
   "actionItems": [
@@ -140,6 +146,8 @@ Return only JSON. Do not wrap in markdown quotes.`;
   const parsed = JSON.parse(content);
   return {
     title: parsed.title || 'Voice Note Summary',
+    tone: parsed.tone || 'Action-oriented',
+    sentiment: parsed.sentiment || 'Constructive',
     tldr: Array.isArray(parsed.tldr) ? parsed.tldr : ['Audio transcribed.'],
     keyDecisions: Array.isArray(parsed.keyDecisions) ? parsed.keyDecisions : [],
     actionItems: Array.isArray(parsed.actionItems)

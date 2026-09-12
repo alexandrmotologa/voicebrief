@@ -114,27 +114,38 @@ export async function handleIncomingVoiceOrAudio(ctx: Context): Promise<void> {
     const seconds = durationSec % 60;
     const formattedDuration = `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
 
-    let replyText = `VoiceBrief: ${summary.title} (${formattedDuration})\n\n`;
+    const isGroup = ctx.chat?.type === 'group' || ctx.chat?.type === 'supergroup';
 
-    replyText += `TL;DR:\n`;
-    for (const bullet of summary.tldr) {
-      replyText += `* ${bullet}\n`;
-    }
-
-    if (summary.actionItems.length > 0) {
-      replyText += `\nAction Items (${summary.actionItems.length}):\n`;
-      for (const item of summary.actionItems) {
-        const checkbox = item.completed ? '[x]' : '[ ]';
-        const assignee = item.assignee ? ` (@${item.assignee})` : '';
-        const deadline = item.deadline ? ` - ${item.deadline}` : '';
-        replyText += `${checkbox} ${item.task}${assignee}${deadline}\n`;
+    let replyText = '';
+    if (isGroup) {
+      replyText = `VoiceBrief: ${summary.title} (${formattedDuration})\n`;
+      replyText += `* ${summary.tldr[0] || 'Audio processed.'}\n`;
+      if (summary.actionItems.length > 0) {
+        replyText += `* ${summary.actionItems.length} action items logged.\n`;
       }
-    }
+    } else {
+      replyText = `VoiceBrief: ${summary.title} (${formattedDuration})\n\n`;
 
-    if (summary.keyDecisions.length > 0) {
-      replyText += `\nKey Decisions:\n`;
-      for (const decision of summary.keyDecisions) {
-        replyText += `* ${decision}\n`;
+      replyText += `TL;DR:\n`;
+      for (const bullet of summary.tldr) {
+        replyText += `* ${bullet}\n`;
+      }
+
+      if (summary.actionItems.length > 0) {
+        replyText += `\nAction Items (${summary.actionItems.length}):\n`;
+        for (const item of summary.actionItems) {
+          const checkbox = item.completed ? '[x]' : '[ ]';
+          const assignee = item.assignee ? ` (@${item.assignee})` : '';
+          const deadline = item.deadline ? ` - ${item.deadline}` : '';
+          replyText += `${checkbox} ${item.task}${assignee}${deadline}\n`;
+        }
+      }
+
+      if (summary.keyDecisions.length > 0) {
+        replyText += `\nKey Decisions:\n`;
+        for (const decision of summary.keyDecisions) {
+          replyText += `* ${decision}\n`;
+        }
       }
     }
 

@@ -113,3 +113,51 @@ export function generateWaveformPeaks(numPeaks = 64, seed?: string): number[] {
 
   return peaks;
 }
+
+export function sliceAudioSnippet(
+  inputPath: string,
+  startSec: number,
+  endSec: number,
+  outputPath: string
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const dir = path.dirname(outputPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    const duration = Math.max(1, endSec - startSec);
+    const args = [
+      '-y',
+      '-ss',
+      startSec.toString(),
+      '-t',
+      duration.toString(),
+      '-i',
+      inputPath,
+      '-c:a',
+      'libmp3lame',
+      '-b:a',
+      '128k',
+      outputPath,
+    ];
+
+    const proc = spawn('ffmpeg', args);
+    let stderr = '';
+    proc.stderr.on('data', (d) => {
+      stderr += d.toString();
+    });
+
+    proc.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`FFmpeg slice exited with code ${code}: ${stderr}`));
+      }
+    });
+
+    proc.on('error', (err) => {
+      reject(new Error(`Failed to slice audio: ${err.message}`));
+    });
+  });
+}

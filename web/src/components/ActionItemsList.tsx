@@ -1,7 +1,8 @@
 import type { FC, FormEvent } from 'react';
 import { useState } from 'react';
-import { Check, User, Calendar, Plus, Flag, Trash2 } from 'lucide-react';
+import { Check, User, Calendar, Plus, Flag, Trash2, CalendarPlus, Download } from 'lucide-react';
 import { useTelegram } from '../hooks/useTelegram';
+import { getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 
 export interface ActionItem {
   id: string;
@@ -14,6 +15,7 @@ export interface ActionItem {
 
 interface ActionItemsListProps {
   items: ActionItem[];
+  noteTitle?: string;
   onToggleItem: (id: string) => void;
   onAddItem: (task: string, assignee?: string, priority?: string) => void;
   onDeleteItem?: (id: string) => void;
@@ -21,11 +23,12 @@ interface ActionItemsListProps {
 
 export const ActionItemsList: FC<ActionItemsListProps> = ({
   items,
+  noteTitle,
   onToggleItem,
   onAddItem,
   onDeleteItem,
 }) => {
-  const { hapticImpact } = useTelegram();
+  const { hapticImpact, hapticNotification } = useTelegram();
   const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
   const [newTaskText, setNewTaskText] = useState('');
   const [isAdding, setIsAdding] = useState(false);
@@ -161,7 +164,7 @@ export const ActionItemsList: FC<ActionItemsListProps> = ({
                   {item.task}
                 </span>
 
-                {/* Metadata Pills */}
+                {/* Metadata Pills & Calendar Actions */}
                 <div className="flex flex-wrap items-center gap-2 pt-0.5">
                   {getPriorityBadge(item.priority)}
 
@@ -178,6 +181,32 @@ export const ActionItemsList: FC<ActionItemsListProps> = ({
                       {item.deadline}
                     </span>
                   )}
+
+                  {/* Calendar Integration Links */}
+                  <div className="flex items-center gap-1 ml-auto">
+                    <a
+                      href={getGoogleCalendarUrl(item.task, item.deadline, noteTitle)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-slate-400 hover:text-indigo-300 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/60 px-1.5 py-0.5 rounded flex items-center gap-1 transition-colors"
+                      title="Add to Google Calendar"
+                    >
+                      <CalendarPlus className="w-3 h-3 text-indigo-400" />
+                      <span>Cal</span>
+                    </a>
+
+                    <button
+                      onClick={() => {
+                        downloadIcsFile(item.task, item.deadline, noteTitle);
+                        hapticNotification('success');
+                      }}
+                      className="text-[10px] text-slate-400 hover:text-indigo-300 bg-slate-800/70 hover:bg-slate-800 border border-slate-700/60 px-1.5 py-0.5 rounded flex items-center gap-1 transition-colors"
+                      title="Download .ics event"
+                    >
+                      <Download className="w-2.5 h-2.5 text-cyan-400" />
+                      <span>.ics</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 

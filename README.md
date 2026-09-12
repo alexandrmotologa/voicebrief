@@ -19,13 +19,16 @@ Users can forward any voice message to the Telegram bot to receive an immediate 
 
 ## Features
 
-- **Voice note processing:** Ingests Telegram `.oga`/`.ogg` Opus voice messages, downsamples to 16 kHz mono, and transcodes to standard MP3.
-- **Waveform audio player:** Visual amplitude scrub bar, custom playback speeds (1x, 1.25x, 1.5x, 2x), and instant seek.
-- **Interactive checklist:** Tracks assignees, deadlines, and urgency levels. Checkbox clicks sync with SQLite in real time.
-- **Synchronized transcript:** Highlights sentences as audio plays. Clicking any sentence jumps the player to that timestamp.
-- **Keyword search:** Instant in-transcript search with match counts and seek-on-click.
-- **Zero-domain demo mode:** Bundles a pre-transcribed engineering sync and audio file for local testing without Telegram bot tokens or AI API keys.
-- **Dual AI adapters:** Plug-and-play support for Groq Whisper, OpenAI Whisper, and local mock generation.
+- **Voice note processing:** Ingests Telegram `.oga`/`.ogg` Opus voice messages, downsamples to 16 kHz mono, and transcodes to standard MP3 with automatic 64-peak amplitude profiling.
+- **Waveform player with speaker diarization:** 64-bar visual scrub bar with color-coded speaker segments (Alex, Elena, David), playback rates (1x, 1.25x, 1.5x, 2x), and instant seek.
+- **Interactive action items & calendar export:** Real-time priority checklist synced with SQLite. Exports deadlines directly to Google Calendar or downloads `.ics` files in 1 click.
+- **Synchronized transcript & snippet clipping:** Highlights sentences during playback. Users can slice any spoken quote into an isolated MP3 clip with a dedicated player and shareable link.
+- **"Ask AI" interactive Q&A:** Contextual chat allowing users to query voice note content (e.g. "When is the database migration?") with cited timestamps.
+- **In-app voice recording:** Record audio directly inside the Mini App via browser MediaRecorder API without leaving the interface.
+- **Live keyword search:** Real-time transcript filtering with match counts and seek-on-click navigation.
+- **Multi-language translation:** Instant one-click translation switcher for summaries and decisions into Romanian, Spanish, and English.
+- **Group chat compact mode & `/tldr`:** Optimized Telegram messages for group chats with expandable Mini App buttons.
+- **Zero-domain demo mode:** Bundles a pre-transcribed engineering sync and 165-second audio track for instant testing without API keys.
 
 ---
 

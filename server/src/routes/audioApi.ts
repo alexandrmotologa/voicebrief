@@ -4,6 +4,27 @@ import path from 'path';
 import { getNoteById } from '../db/queries.js';
 
 export async function registerAudioRoutes(fastify: FastifyInstance): Promise<void> {
+  // GET /api/audio/clips/:filename - Stream audio clip
+  fastify.get('/api/audio/clips/:filename', async (request: FastifyRequest, reply: FastifyReply) => {
+    const params = request.params as { filename: string };
+    const cleanFilename = path.basename(params.filename);
+    const storageDir = process.env.AUDIO_STORAGE_PATH || path.join(process.cwd(), 'data', 'audio');
+    const clipPath = path.join(storageDir, 'clips', cleanFilename);
+
+    if (!fs.existsSync(clipPath)) {
+      return reply.status(404).send({ error: 'Audio clip not found' });
+    }
+
+    const stat = fs.statSync(clipPath);
+    const fileStream = fs.createReadStream(clipPath);
+    return reply
+      .status(200)
+      .header('Content-Length', stat.size)
+      .header('Content-Type', 'audio/mpeg')
+      .header('Accept-Ranges', 'bytes')
+      .send(fileStream);
+  });
+
   // GET /api/audio/:id - Stream MP3 audio with Range header support
   fastify.get('/api/audio/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const params = request.params as { id: string };
